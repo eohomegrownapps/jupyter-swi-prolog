@@ -4,6 +4,8 @@ from pyswip.prolog import PrologError
 
 DEFAULT_LIMIT = 10
 
+rules = set()
+
 def format_value(value):
     output = ""
     if isinstance(value, list):
@@ -78,7 +80,8 @@ def run(code):
                     result = prolog.query(tmp, maxresult=maxresults)
                     output.append(format_result(result))
                     result.close()
-                else:
+                elif (tmp not in rules):
+                    rules.add(tmp)
                     prolog.assertz('(' + tmp + ')')
             except PrologError as error:
                 ok = False
