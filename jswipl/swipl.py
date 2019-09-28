@@ -83,6 +83,7 @@ def run(code):
                 elif (tmp not in rules):
                     rules.add(tmp)
                     prolog.assertz('(' + tmp + ')')
+                    output.append("OK")
             except PrologError as error:
                 ok = False
                 output.append("ERROR: {}".format(error))
