@@ -41,6 +41,7 @@ def run(code):
 
     output = []
     ok = True
+    numRules = 0
 
     tmp = ""
     isQuery = False
@@ -81,14 +82,18 @@ def run(code):
                     output.append(format_result(result))
                     result.close()
                 elif (tmp not in rules):
+                    numRules += 1
                     rules.add(tmp)
                     prolog.assertz('(' + tmp + ')')
-                    output.append("OK")
             except PrologError as error:
                 ok = False
                 output.append("ERROR: {}".format(error))
 
             tmp = ""
             isQuery = False
+
+    if numRules > 0:
+        output.append("Added " + str(numRules) + " rule(s).")
+        numRules = 0
 
     return output, ok
