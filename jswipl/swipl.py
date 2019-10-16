@@ -93,7 +93,7 @@ def run(code):
             isQuery = False
 
     if numRules > 0:
-        output.append("Added " + str(numRules) + " rule(s).")
+        output.append("Added " + str(numRules) + " clauses(s).")
         numRules = 0
 
     return output, ok
