@@ -25,12 +25,18 @@ class SwiplKernel(Kernel):
         if not silent:
             # We run the Prolog code and get the output.
             output, ok = swipl.run(code)
-
-            # We send back the result to the frontend.
-            stream_content = {'name': 'stdout',
-                              'text': "\n".join(output)}
-            self.send_response(self.iopub_socket,
-                              'stream', stream_content)
+            if ok:
+                # We send back the result to the frontend.
+                stream_content = {'name': 'stdout',
+                                  'text': "\n".join(output)}
+                self.send_response(self.iopub_socket,
+                                  'stream', stream_content)
+            else:
+                err_payload = {'ename': "",
+                               'evalue': "",
+                               'traceback':output}
+                self.send_response(self.iopub_socket,
+                                   'error', err_payload)
         return {'status': 'ok',
                 # The base class increments the execution
                 # count
