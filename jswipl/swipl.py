@@ -1,10 +1,11 @@
-from pyswip import Prolog
+from pyswip_notebook import IsolatedProlog
 from pyswip import Functor
 from pyswip.prolog import PrologError
 
 DEFAULT_LIMIT = 10
 
 rules = set()
+prolog = IsolatedProlog()
 
 def format_value(value):
     output = ""
@@ -37,8 +38,8 @@ def format_result(result):
     return output
 
 def run(code):
-    prolog = Prolog()
-
+    global rules
+    global prolog
     output = []
     ok = True
     numRules = 0
@@ -49,7 +50,17 @@ def run(code):
         line = line.strip()
         if line == "" or line[0] == "%":
             continue
-
+        line = line.split("%")[0].strip()
+        if line == "!reset":
+            output = []
+            ok = True
+            numRules = 0
+            tmp = ""
+            isQuery = False
+            rules = set()
+            prolog = IsolatedProlog()
+            continue
+        
         if line[:2] == "?-":
             isQuery = True
             line = line[2:]
@@ -78,7 +89,7 @@ def run(code):
 
             try:
                 if isQuery:
-                    result = prolog.query(tmp, maxresult=maxresults)
+                    result = prolog.query(f"({tmp})", maxresult=maxresults)
                     output.append(format_result(result))
                     result.close()
                 elif (tmp not in rules):
